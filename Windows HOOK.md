@@ -9,21 +9,12 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
     {
         PKBDLLHOOKSTRUCT pKeyboard = lParam;
         wchar_t keyName[100];
-
         int result = GetKeyNameTextW(pKeyboard->scanCode << 16, keyName, 100);
-        if (result == 0)
-        {
-            MessageBoxA(0, "Ошибка получения имени клавиши!", "Ошибка", 0);
-        }
-        else
-        {
-            MessageBox(NULL, keyName, L"Нажатая клавиша", MB_OK);
-        }
-
+        if (result == 0) MessageBoxA(0, L"Ошибка получения имени клавиши!", L"Ошибка", 0);
+        else MessageBox(0, keyName, L"Нажатая клавиша", 0);
     }
     return CallNextHookEx(0, code, wParam, lParam); //переходим к следующему перехватчику
 }
-
 
 int main()
 {
@@ -34,13 +25,11 @@ int main()
         MessageBoxA(0, "Ошибка создания перехватчика!", "Ошибка", 0);
         return 1;
     }
-
     MSG msg;
     while (GetMessageW(&msg, 0, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
-
     UnhookWindowsHookEx(hHook); //удаление перехватчика
     return 0;
 }      
@@ -56,13 +45,10 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 	{
 		PKBDLLHOOKSTRUCT pKeyboard = lParam;
 		char ASCIIChar = pKeyboard->vkCode;
-		wchar_t symbol[100];
-		if (ASCIIChar == 0)
-		{
-			MessageBoxA(0, "Ошибка получения имени клавиши!", "Ошибка", 0);
-		}
+		if (ASCIIChar == 0)	MessageBoxA(0, "Ошибка получения имени клавиши!", "Ошибка", 0);
 		else
 		{
+		    wchar_t symbol[100];
 			wsprintf(symbol, L"%lc", (wchar_t) ASCIIChar);
 			MessageBoxW(0, symbol, L"Нажатая клавиша", 0);
 		}
