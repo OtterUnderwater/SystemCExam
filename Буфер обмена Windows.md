@@ -8,29 +8,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int SetBufferClipboard(LPWSTR buffer)
+int SetClipboard(LPWSTR buffer)
 {
-	DWORD len = wcslen(buffer) + 1;  //определение длины
-	HANDLE h = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(LPWSTR)); //перемещаемая память и размер
-	memcpy(GlobalLock(h), buffer, len * sizeof(LPWSTR));  //копируем текст
-	GlobalUnlock(h);  //открываем
+	DWORD len = wcslen(buffer) * sizeof(LPWSTR);
+	HANDLE h = GlobalAlloc(GMEM_MOVEABLE, len);
+	memcpy(GlobalLock(h), buffer, len);
+	GlobalUnlock(h);
 	OpenClipboard(0);
 	EmptyClipboard();
 	SetClipboardData(CF_UNICODETEXT, h);
 	CloseClipboard();
 }
 
-int GetBufferClipboard()
+int GetClipboard()
 {
 	OpenClipboard(0);
 	LPWSTR buffer = GetClipboardData(CF_UNICODETEXT);
 	CloseClipboard();
-	MessageBox(0, buffer, L"Буфер", MB_OK);
+	MessageBox(0, buffer, L"Буффер", 0);
 }
 
 int main()
 {
-	SetBufferClipboard(L"Ну ты и тварь");
-	GetBufferClipboard();
+	SetClipboard(L"Hello");
+	GetClipboard();
 }
 ```
